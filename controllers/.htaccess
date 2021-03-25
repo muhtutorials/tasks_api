@@ -1,0 +1,30 @@
+# enable CORS (in case frontend site is hosted on a different server from backend)
+# "*" allows any website or a specific website can be specified
+Header Set Access-Control-Allow-Origin "*"
+
+php_flag display_errors on
+
+# enable authorization header
+SetEnvIf Authorization .+ HTTP_AUTHORIZATION=$0
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+
+RewriteRule ^tasks/([0-9]+)$ task.php?id=$1 [L]
+RewriteRule ^tasks/complete$ task.php?completed=Y [L]
+RewriteRule ^tasks/incomplete$ task.php?completed=N [L]
+RewriteRule ^tasks/page/([0-9]+)$ task.php?page=$1 [L]
+RewriteRule ^tasks$ task.php [L]
+
+RewriteRule ^users$ users.php [L]
+
+RewriteRule ^sessions/([0-9]+)$ sessions.php?id=$1 [L]
+RewriteRule ^sessions$ sessions.php [L]
+
+# get image attributes
+RewriteRule ^tasks/([0-9]+)/images/([0-9]+)/attributes$ images.php?task_id=$1&image_id=$2&attributes=true [L]
+# get image itself
+RewriteRule ^tasks/([0-9]+)/images/([0-9]+)$ images.php?task_id=$1&image_id=$2 [L]
+# post image
+RewriteRule ^tasks/([0-9]+)/images$ images.php?task_id=$1 [L]
